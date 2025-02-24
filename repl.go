@@ -5,9 +5,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mogumogu934/pokedex/internal/pokeapi"
 )
 
-func startRepl() {
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+}
+
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -17,11 +25,18 @@ func startRepl() {
 			continue
 		}
 
-		if cmd, ok := commands[input[0]]; ok {
-			err := cmd.callback()
+		commandName := input[0]
+
+		cmd, exists := commands[commandName]
+		if exists {
+			err := cmd.callback(cfg)
 			if err != nil {
-				fmt.Println("Error: Unknown command", err)
+				fmt.Println(err)
 			}
+			continue
+		} else {
+			fmt.Println("Unknown command")
+			continue
 		}
 	}
 }
@@ -34,7 +49,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(config *config) error
 }
 
 var commands map[string]cliCommand
@@ -47,25 +62,22 @@ func init() {
 			callback:    commandHelp,
 		},
 
+		"mapf": {
+			name:        "mapf",
+			description: "Displays the next page of locations",
+			callback:    commandMapf,
+		},
+
+		"mapb": {
+			name:        "mapb",
+			description: "Displays the previous page of locations",
+			callback:    commandMapb,
+		},
+
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex",
 			callback:    commandExit,
 		},
 	}
-}
-
-func commandHelp() error {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Printf("Usage:\n\n")
-	for _, cmd := range commands {
-		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
-	}
-	return nil
-}
-
-func commandExit() error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
 }
