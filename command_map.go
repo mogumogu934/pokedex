@@ -3,21 +3,17 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
+	"strings"
 )
 
-func commandHelp(cfg *config) error {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Usage:")
-	fmt.Println()
-	for _, cmd := range commands {
-		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
-	}
-	fmt.Println()
-	return nil
+func extractID(url string) string {
+	url = strings.TrimSuffix(url, "/")
+	parts := strings.Split(url, "/")
+
+	return parts[len(parts)-1]
 }
 
-func commandMapf(cfg *config) error {
+func commandMapf(cfg *config, args ...string) error {
 	locations, err := cfg.pokeapiClient.GetLocationAreas(cfg.nextLocationsURL)
 	if err != nil {
 		return err
@@ -27,14 +23,14 @@ func commandMapf(cfg *config) error {
 	cfg.prevLocationsURL = locations.Previous
 
 	for _, location := range locations.Results {
-		fmt.Println(location.Name)
+		fmt.Printf("%s %s\n", extractID(location.URL), location.Name)
 	}
 	fmt.Println()
 
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args ...string) error {
 	if cfg.prevLocationsURL == nil {
 		return errors.New("you're on the first page")
 	}
@@ -48,15 +44,9 @@ func commandMapb(cfg *config) error {
 	cfg.prevLocationsURL = locations.Previous
 
 	for _, location := range locations.Results {
-		fmt.Println(location.Name)
+		fmt.Printf("%s %s\n", extractID(location.URL), location.Name)
 	}
 	fmt.Println()
 
-	return nil
-}
-
-func commandExit(cfg *config) error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
 	return nil
 }

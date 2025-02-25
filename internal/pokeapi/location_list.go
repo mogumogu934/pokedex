@@ -2,21 +2,21 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/mogumogu934/pokedex/internal/pokecache"
 )
 
-var cache *pokecache.Cache
+var locationCache *pokecache.Cache
 
 func init() {
-	cache = pokecache.NewCache(5 * time.Minute)
+	locationCache = pokecache.NewCache(5 * time.Minute)
 }
 
-type LocationAreas struct {
+type LocationAreaList struct {
 	Count    int     `json:"count"`
 	Next     *string `json:"next"`
 	Previous *string `json:"previous"`
@@ -26,48 +26,48 @@ type LocationAreas struct {
 	} `json:"results"`
 }
 
-func (c *Client) GetLocationAreas(pageURL *string) (LocationAreas, error) {
+func (c *Client) GetLocationAreas(pageURL *string) (LocationAreaList, error) {
 	url := baseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
 	}
 
-	if data, exists := cache.Get(url); exists {
-		var locationAreas LocationAreas
+	if data, exists := locationCache.Get(url); exists {
+		var locationAreas LocationAreaList
 		err := json.Unmarshal(data, &locationAreas)
 		if err != nil {
-			return LocationAreas{}, err
+			return LocationAreaList{}, err
 		}
 		return locationAreas, nil
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return LocationAreas{}, err
+		return LocationAreaList{}, err
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return LocationAreas{}, err
+		return LocationAreaList{}, err
 	}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return LocationAreas{}, err
+		return LocationAreaList{}, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode > 299 {
-		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", resp.StatusCode, data)
+		return LocationAreaList{}, fmt.Errorf("response failed with status code: %d and\nbody: %s", resp.StatusCode, data)
 	}
 
-	locationAreas := LocationAreas{}
+	locationAreas := LocationAreaList{}
 	err = json.Unmarshal(data, &locationAreas)
 	if err != nil {
-		return LocationAreas{}, err
+		return LocationAreaList{}, err
 	}
 
-	cache.Add(url, data)
+	locationCache.Add(url, data)
 
 	return locationAreas, nil
 }
