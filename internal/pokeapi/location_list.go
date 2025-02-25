@@ -5,7 +5,16 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/mogumogu934/pokedex/internal/pokecache"
 )
+
+var cache *pokecache.Cache
+
+func init() {
+	cache = pokecache.NewCache(5 * time.Minute)
+}
 
 type LocationAreas struct {
 	Count    int     `json:"count"`
@@ -21,6 +30,15 @@ func (c *Client) GetLocationAreas(pageURL *string) (LocationAreas, error) {
 	url := baseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
+	}
+
+	if data, exists := cache.Get(url); exists {
+		var locationAreas LocationAreas
+		err := json.Unmarshal(data, &locationAreas)
+		if err != nil {
+			return LocationAreas{}, err
+		}
+		return locationAreas, nil
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -48,6 +66,8 @@ func (c *Client) GetLocationAreas(pageURL *string) (LocationAreas, error) {
 	if err != nil {
 		return LocationAreas{}, err
 	}
+
+	cache.Add(url, data)
 
 	return locationAreas, nil
 }
