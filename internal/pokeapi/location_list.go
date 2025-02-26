@@ -10,12 +10,6 @@ import (
 	"github.com/mogumogu934/pokedex/internal/pokecache"
 )
 
-var locationCache *pokecache.Cache
-
-func init() {
-	locationCache = pokecache.NewCache(5 * time.Minute)
-}
-
 type LocationAreaList struct {
 	Count    int     `json:"count"`
 	Next     *string `json:"next"`
@@ -24,6 +18,12 @@ type LocationAreaList struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
 	} `json:"results"`
+}
+
+var locationCache *pokecache.Cache
+
+func init() {
+	locationCache = pokecache.NewCache(5 * time.Minute)
 }
 
 func (c *Client) GetLocationAreas(pageURL *string) (LocationAreaList, error) {

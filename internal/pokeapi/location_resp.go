@@ -10,12 +10,6 @@ import (
 	"github.com/mogumogu934/pokedex/internal/pokecache"
 )
 
-var pokemonCache *pokecache.Cache
-
-func init() {
-	pokemonCache = pokecache.NewCache(5 * time.Minute)
-}
-
 type LocationAreaResp struct {
 	EncounterMethodRates []struct {
 		EncounterMethod struct {
@@ -69,16 +63,22 @@ type LocationAreaResp struct {
 	} `json:"pokemon_encounters"`
 }
 
-func (c *Client) GetPokemon(location string) (LocationAreaResp, error) {
+var locationAreaRespCache *pokecache.Cache
+
+func init() {
+	locationAreaRespCache = pokecache.NewCache(5 * time.Minute)
+}
+
+func (c *Client) GetLocationAreaResp(location string) (LocationAreaResp, error) {
 	url := baseURL + "/location-area" + "/" + location
 
-	if data, exists := pokemonCache.Get(url); exists {
-		var pokemon LocationAreaResp
-		err := json.Unmarshal(data, &pokemon)
+	if data, exists := locationAreaRespCache.Get(url); exists {
+		var locationAreaResp LocationAreaResp
+		err := json.Unmarshal(data, &locationAreaResp)
 		if err != nil {
 			return LocationAreaResp{}, err
 		}
-		return pokemon, nil
+		return locationAreaResp, nil
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -101,13 +101,13 @@ func (c *Client) GetPokemon(location string) (LocationAreaResp, error) {
 		return LocationAreaResp{}, fmt.Errorf("response failed with status code: %d and\nbody: %s", resp.StatusCode, data)
 	}
 
-	pokemon := LocationAreaResp{}
-	err = json.Unmarshal(data, &pokemon)
+	locationAreaResp := LocationAreaResp{}
+	err = json.Unmarshal(data, &locationAreaResp)
 	if err != nil {
 		return LocationAreaResp{}, err
 	}
 
-	pokemonCache.Add(url, data)
+	locationAreaRespCache.Add(url, data)
 
-	return pokemon, nil
+	return locationAreaResp, nil
 }

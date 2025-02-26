@@ -26,7 +26,6 @@ func commandMapf(cfg *config, args ...string) error {
 		fmt.Printf("%s %s\n", extractID(location.URL), location.Name)
 	}
 	fmt.Println()
-
 	return nil
 }
 
@@ -47,6 +46,5 @@ func commandMapb(cfg *config, args ...string) error {
 		fmt.Printf("%s %s\n", extractID(location.URL), location.Name)
 	}
 	fmt.Println()
-
 	return nil
 }
