@@ -20,13 +20,13 @@ func commandCatch(cfg *config, args ...string) error {
 		return errors.New("you must provide the name of a pokemon")
 	}
 
-	if len(PokemonInLocation) == 0 {
+	if len(pokemonInLocation) == 0 {
 		return errors.New("you must explore a location first")
 	}
 
 	pokemonTarget := args[0]
 
-	if _, exists := PokemonInLocation[pokemonTarget]; !exists {
+	if _, exists := pokemonInLocation[pokemonTarget]; !exists {
 		return fmt.Errorf("%s is not in current location", pokemonTarget)
 	}
 

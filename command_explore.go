@@ -5,17 +5,17 @@ import (
 	"fmt"
 )
 
-var PokemonInLocation map[string]int
+var pokemonInLocation map[string]int
 
 func init() {
-	PokemonInLocation = make(map[string]int)
+	pokemonInLocation = make(map[string]int)
 }
 
 func commandExplore(cfg *config, args ...string) error {
 	if len(args) == 0 {
 		return errors.New("you must provide a location ID or location name")
 	}
-	clear(PokemonInLocation) // Delete all elements from map
+	clear(pokemonInLocation) // Delete all elements from map
 	locationArea := args[0]
 
 	locationAreaResp, err := cfg.pokeapiClient.GetLocationAreaResp(locationArea)
@@ -29,7 +29,7 @@ func commandExplore(cfg *config, args ...string) error {
 	fmt.Println("Found Pokemon:")
 	for _, p := range pokemon {
 		fmt.Printf("  - %s\n", p.Pokemon.Name)
-		PokemonInLocation[p.Pokemon.Name] = 0
+		pokemonInLocation[p.Pokemon.Name] = 0
 	}
 
 	fmt.Println()
