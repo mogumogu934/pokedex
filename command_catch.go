@@ -20,17 +20,8 @@ func commandCatch(cfg *config, args ...string) error {
 	}
 
 	pokemonTarget := args[0]
-	IsInLocation := false
-	for _, pokemon := range PokemonInLocation {
-		if pokemon == pokemonTarget {
-			IsInLocation = true
-			break
-		} else {
-			continue
-		}
-	}
 
-	if !IsInLocation {
+	if _, exists := PokemonInLocation[pokemonTarget]; !exists {
 		return fmt.Errorf("%s is not in current location", pokemonTarget)
 	}
 
@@ -40,6 +31,9 @@ func commandCatch(cfg *config, args ...string) error {
 	}
 
 	catchRate := 100 - (pokemonInfo.BaseExperience / 3)
+	if catchRate > 85 {
+		catchRate = 85 // Maximum is 85%
+	}
 	if catchRate < 10 {
 		catchRate = 10 // Minimum is 10%
 	}
