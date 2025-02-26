@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 
@@ -11,12 +12,29 @@ var pokedex = make(map[string]pokeapi.PokemonInfo)
 
 func commandCatch(cfg *config, args ...string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("you must provide the name of a pokemon")
+		return errors.New("you must provide the name of a pokemon")
 	}
 
-	pokemon := args[0]
+	if len(PokemonInLocation) == 0 {
+		return errors.New("you must explore a location first")
+	}
 
-	pokemonInfo, err := cfg.pokeapiClient.GetPokemonInfo(pokemon)
+	pokemonTarget := args[0]
+	IsInLocation := false
+	for _, pokemon := range PokemonInLocation {
+		if pokemon == pokemonTarget {
+			IsInLocation = true
+			break
+		} else {
+			continue
+		}
+	}
+
+	if !IsInLocation {
+		return fmt.Errorf("%s is not in current location", pokemonTarget)
+	}
+
+	pokemonInfo, err := cfg.pokeapiClient.GetPokemonInfo(pokemonTarget)
 	if err != nil {
 		return err
 	}
@@ -26,12 +44,12 @@ func commandCatch(cfg *config, args ...string) error {
 		catchRate = 10 // Minimum is 10%
 	}
 
-	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon)
+	fmt.Printf("Throwing a Pokeball at %s...\n", pokemonTarget)
 	if caught := catchRate >= rand.Intn(100); caught {
-		fmt.Printf("%s was caught!\n", pokemon)
-		pokedex[pokemon] = pokemonInfo
+		fmt.Printf("%s was caught!\n", pokemonTarget)
+		pokedex[pokemonTarget] = pokemonInfo
 	} else {
-		fmt.Printf("%s escaped!\n", pokemon)
+		fmt.Printf("%s escaped!\n", pokemonTarget)
 	}
 
 	fmt.Println()

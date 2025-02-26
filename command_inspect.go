@@ -5,7 +5,7 @@ import "fmt"
 func commandInspect(cfg *config, args ...string) error {
 	pokemon := args[0]
 	if _, exists := pokedex[pokemon]; !exists {
-		return fmt.Errorf("you have not caught this pokemon yet")
+		return fmt.Errorf("you have yet to catch %s", pokemon)
 	}
 
 	height := float64(pokedex[pokemon].Height) / 10.0

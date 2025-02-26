@@ -1,14 +1,17 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
+var PokemonInLocation = []string{}
+
 func commandExplore(cfg *config, args ...string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("you must provide a location ID or location name")
+		return errors.New("you must provide a location ID or location name")
 	}
-
+	PokemonInLocation = nil // Remove all elements from slice
 	locationArea := args[0]
 
 	locationAreaResp, err := cfg.pokeapiClient.GetLocationAreaResp(locationArea)
@@ -22,6 +25,7 @@ func commandExplore(cfg *config, args ...string) error {
 	fmt.Println("Found Pokemon:")
 	for _, p := range pokemon {
 		fmt.Printf("- %s\n", p.Pokemon.Name)
+		PokemonInLocation = append(PokemonInLocation, p.Pokemon.Name)
 	}
 
 	fmt.Println()
