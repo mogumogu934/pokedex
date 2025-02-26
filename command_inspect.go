@@ -12,6 +12,7 @@ func commandInspect(cfg *config, args ...string) error {
 	weight := float64(pokedex[pokemon].Weight) / 10.0
 
 	fmt.Printf("Name: %s\n", pokedex[pokemon].Name)
+	fmt.Printf("Number: %d\n", pokedex[pokemon].ID)
 	fmt.Printf("Height: %v m\n", height)
 	fmt.Printf("Weight: %v kg\n", weight)
 	fmt.Printf("Stats:\n")

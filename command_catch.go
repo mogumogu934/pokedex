@@ -9,6 +9,11 @@ import (
 )
 
 var pokedex = make(map[string]pokeapi.PokemonInfo)
+var pokemonCaught []string
+
+func init() {
+	pokemonCaught = make([]string, 0)
+}
 
 func commandCatch(cfg *config, args ...string) error {
 	if len(args) == 0 {
@@ -30,7 +35,7 @@ func commandCatch(cfg *config, args ...string) error {
 		return err
 	}
 
-	catchRate := 100 - (pokemonInfo.BaseExperience / 3)
+	catchRate := 100 - (pokemonInfo.BaseExperience / 2)
 	if catchRate > 85 {
 		catchRate = 85 // Maximum is 85%
 	}
@@ -41,7 +46,8 @@ func commandCatch(cfg *config, args ...string) error {
 	fmt.Printf("Throwing a Pokeball at %s...\n", pokemonTarget)
 	if caught := catchRate >= rand.Intn(100); caught {
 		fmt.Printf("%s was caught!\n", pokemonTarget)
-		pokedex[pokemonTarget] = pokemonInfo
+		pokedex[pokemonTarget] = pokemonInfo                 // For commandInspect
+		pokemonCaught = append(pokemonCaught, pokemonTarget) // To handle multiple of same Pokemon
 	} else {
 		fmt.Printf("%s escaped!\n", pokemonTarget)
 	}

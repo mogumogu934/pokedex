@@ -25,6 +25,7 @@ func commandMapf(cfg *config, args ...string) error {
 	for _, location := range locations.Results {
 		fmt.Printf("%s %s\n", extractID(location.URL), location.Name)
 	}
+
 	fmt.Println()
 	return nil
 }
@@ -45,6 +46,7 @@ func commandMapb(cfg *config, args ...string) error {
 	for _, location := range locations.Results {
 		fmt.Printf("%s %s\n", extractID(location.URL), location.Name)
 	}
+
 	fmt.Println()
 	return nil
 }
