@@ -87,6 +87,12 @@ func init() {
 			callback:    commandCatch,
 		},
 
+		"inspect": {
+			name:        "inspect <pokemon name",
+			description: "Inspects a pokemon",
+			callback:    commandInspect,
+		},
+
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex",

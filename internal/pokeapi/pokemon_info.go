@@ -15,18 +15,8 @@ type PokemonInfo struct {
 	Height                 int    `json:"height"`
 	ID                     int    `json:"id"`
 	LocationAreaEncounters string `json:"location_area_encounters"`
-	Moves                  []struct {
-		Move struct {
-			Name string `json:"name"`
-			URL  string `json:"url"`
-		} `json:"move"`
-	} `json:"moves"`
-	Name    string `json:"name"`
-	Species struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"species"`
-	Stats []struct {
+	Name                   string `json:"name"`
+	Stats                  []struct {
 		BaseStat int `json:"base_stat"`
 		Effort   int `json:"effort"`
 		Stat     struct {

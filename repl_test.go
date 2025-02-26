@@ -25,7 +25,7 @@ func TestCleanInput(t *testing.T) {
 		},
 
 		{
-			input:    "mudkip",
+			input:    "Mudkip",
 			expected: []string{"mudkip"},
 		},
 	}
