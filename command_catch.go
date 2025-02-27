@@ -35,15 +35,31 @@ func commandCatch(cfg *config, args ...string) error {
 		return err
 	}
 
-	catchRate := 100 - (pokemonInfo.BaseExperience / 2)
-	if catchRate > 85 {
-		catchRate = 85 // Maximum is 85%
-	}
-	if catchRate < 10 {
-		catchRate = 10 // Minimum is 10%
+	ball := "poke-ball"
+	ballRate := 100
+
+	if len(args) == 2 {
+		ball = args[1]
+		ballRate = getBallRate(ball)
+		if ballRate == 0 {
+			return errors.New("you must use a valid ball type: 'poke-ball(default value)', 'great-ball', 'ultra-ball', 'master-ball'")
+		}
 	}
 
-	fmt.Printf("Throwing a Pokeball at %s...\n", pokemonTarget)
+	catchRate := ballRate - (pokemonInfo.BaseExperience / 2)
+	if catchRate > 100 {
+		catchRate = 100 // Max = 100%
+	}
+	if catchRate < 10 {
+		catchRate = 10 // Min = 10%
+	}
+
+	if ball == "ultra-ball" {
+		fmt.Printf("Throwing an %s at %s...\n", ball, pokemonTarget)
+	} else {
+		fmt.Printf("Throwing a %s at %s...\n", ball, pokemonTarget)
+	}
+
 	if caught := catchRate >= rand.Intn(100); caught {
 		fmt.Printf("%s was caught!\n", pokemonTarget)
 		pokedex[pokemonTarget] = pokemonInfo                 // For commandInspect
@@ -54,4 +70,19 @@ func commandCatch(cfg *config, args ...string) error {
 
 	fmt.Println()
 	return nil
+}
+
+func getBallRate(ball string) int {
+	switch ball {
+	case "master-ball":
+		return 500
+	case "ultra-ball":
+		return 200
+	case "great-ball":
+		return 165
+	case "poke-ball":
+		return 100
+	default:
+		return 0
+	}
 }

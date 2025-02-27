@@ -82,7 +82,7 @@ func init() {
 		},
 
 		"catch": {
-			name:        "catch <pokemon name>",
+			name:        "catch <pokemon name> <ball type>",
 			description: "Attempts to catch a Pokemon",
 			callback:    commandCatch,
 		},
