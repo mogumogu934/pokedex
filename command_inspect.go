@@ -3,6 +3,10 @@ package main
 import "fmt"
 
 func commandInspect(cfg *config, args ...string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("you must provide the name of a pokemon")
+	}
+
 	pokemon := args[0]
 	if _, exists := pokedex[pokemon]; !exists {
 		return fmt.Errorf("you have yet to catch %s", pokemon)
