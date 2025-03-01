@@ -32,6 +32,5 @@ func commandExplore(cfg *config, args ...string) error {
 		pokemonInLocation[p.Pokemon.Name] = 0
 	}
 
-	fmt.Println()
 	return nil
 }

@@ -26,13 +26,13 @@ func commandCatch(cfg *config, args ...string) error {
 
 	pokemonTarget := args[0]
 
-	if _, exists := pokemonInLocation[pokemonTarget]; !exists {
-		return fmt.Errorf("%s is not in current location", pokemonTarget)
-	}
-
 	pokemonInfo, err := cfg.pokeapiClient.GetPokemonInfo(pokemonTarget)
 	if err != nil {
 		return err
+	}
+
+	if _, exists := pokemonInLocation[pokemonTarget]; !exists {
+		return fmt.Errorf("%s is not in current location", pokemonTarget)
 	}
 
 	ball := "poke-ball"
@@ -50,8 +50,8 @@ func commandCatch(cfg *config, args ...string) error {
 	if catchRate > 100 {
 		catchRate = 100 // Max = 100%
 	}
-	if catchRate < 10 {
-		catchRate = 10 // Min = 10%
+	if catchRate < 5 {
+		catchRate = 5 // Min = 5%
 	}
 
 	if ball == "ultra-ball" {
@@ -59,6 +59,8 @@ func commandCatch(cfg *config, args ...string) error {
 	} else {
 		fmt.Printf("Throwing a %s at %s...\n", ball, pokemonTarget)
 	}
+
+	// fmt.Printf("Catch rate: %d%%\n", catchRate)
 
 	if caught := catchRate >= rand.Intn(100); caught {
 		fmt.Printf("%s was caught!\n", pokemonTarget)
@@ -68,7 +70,6 @@ func commandCatch(cfg *config, args ...string) error {
 		fmt.Printf("%s escaped!\n", pokemonTarget)
 	}
 
-	fmt.Println()
 	return nil
 }
 
@@ -77,9 +78,9 @@ func getBallRate(ball string) int {
 	case "master-ball":
 		return 500
 	case "ultra-ball":
-		return 200
+		return 160
 	case "great-ball":
-		return 165
+		return 130
 	case "poke-ball":
 		return 100
 	default:

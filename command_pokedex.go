@@ -1,11 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 func commandPokedex(cfg *config, args ...string) error {
 	if len(pokemonCaught) == 0 {
-		fmt.Println("you have yet to catch any Pokemon...")
-		return nil
+		return errors.New("you have yet to catch any Pokemon")
 	}
 
 	fmt.Println("Your Pokedex:")
@@ -13,6 +15,5 @@ func commandPokedex(cfg *config, args ...string) error {
 		fmt.Printf("  - %s\n", pokemon)
 	}
 
-	fmt.Println()
 	return nil
 }

@@ -16,8 +16,12 @@ type config struct {
 }
 
 func startRepl(cfg *config) {
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Type 'help' to view list of commands")
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
+		fmt.Println()
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
 		input := cleanInput(scanner.Text())
@@ -36,7 +40,7 @@ func startRepl(cfg *config) {
 			}
 			continue
 		} else {
-			fmt.Println("Unknown command")
+			fmt.Println("unknown command")
 			continue
 		}
 	}
@@ -59,7 +63,7 @@ func init() {
 	commands = map[string]cliCommand{
 		"help": {
 			name:        "help",
-			description: "Displays a help message",
+			description: "Displays list of commands",
 			callback:    commandHelp,
 		},
 
@@ -89,7 +93,7 @@ func init() {
 
 		"inspect": {
 			name:        "inspect <pokemon name>",
-			description: "Inspects a Pokemon",
+			description: "Displays information about a Pokemon",
 			callback:    commandInspect,
 		},
 

@@ -5,12 +5,6 @@ import (
 	"sort"
 )
 
-func init() {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Type 'help' to see list of commands")
-	fmt.Println()
-}
-
 func commandHelp(cfg *config, args ...string) error {
 	var names []string
 	for name := range commands {
@@ -24,6 +18,5 @@ func commandHelp(cfg *config, args ...string) error {
 		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
 	}
 
-	fmt.Println()
 	return nil
 }

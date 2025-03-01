@@ -1,10 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 func commandInspect(cfg *config, args ...string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("you must provide the name of a pokemon")
+		return errors.New("you must provide the name of a pokemon")
 	}
 
 	pokemon := args[0]
@@ -30,6 +33,5 @@ func commandInspect(cfg *config, args ...string) error {
 		fmt.Printf("  - %s\n", pType.Type.Name)
 	}
 
-	fmt.Println()
 	return nil
 }
