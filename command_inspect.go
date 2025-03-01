@@ -11,6 +11,12 @@ func commandInspect(cfg *config, args ...string) error {
 	}
 
 	pokemon := args[0]
+
+	_, err := cfg.pokeapiClient.GetPokemonInfo(pokemon)
+	if err != nil {
+		return err
+	}
+
 	if _, exists := pokedex[pokemon]; !exists {
 		return fmt.Errorf("you have yet to catch %s", pokemon)
 	}
