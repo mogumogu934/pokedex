@@ -2,6 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -82,6 +83,10 @@ func (c *Client) GetLocationAreaResp(location string) (LocationAreaResp, error) 
 		return LocationAreaResp{}, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode == 404 {
+		return LocationAreaResp{}, errors.New("you must provide a valid location ID or location name")
+	}
 
 	if resp.StatusCode > 299 {
 		return LocationAreaResp{}, fmt.Errorf("response failed with status code: %d and\nbody: %s", resp.StatusCode, data)

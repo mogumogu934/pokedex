@@ -13,7 +13,7 @@ func init() {
 
 func commandExplore(cfg *config, args ...string) error {
 	if len(args) == 0 {
-		return errors.New("you must provide a location ID or location name")
+		return errors.New("you must provide a valid location ID or location name")
 	}
 	clear(pokemonInLocation) // Delete all elements from map
 	locationArea := args[0]
