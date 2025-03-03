@@ -1,12 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 
 	"github.com/mogumogu934/pokedex/internal/pokeapi"
+	"github.com/peterh/liner"
 )
 
 type config struct {
@@ -15,26 +17,37 @@ type config struct {
 	prevLocationsURL *string
 }
 
+var line *liner.State
+
 func startRepl(cfg *config) {
+	line = liner.NewLiner()
+	defer func() {
+		if line != nil {
+			line.Close() // Ensure terminal state is reset
+		}
+	}()
+
+	setupSignalHandler()
+
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Type 'help' to view list of commands")
+	line.AppendHistory("help")
 
-	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Println()
-		fmt.Print("Pokedex > ")
-		scanner.Scan()
-		input := cleanInput(scanner.Text())
-		if len(input) == 0 {
+		rawInput, _ := line.Prompt("Pokedex > ")
+		if len(rawInput) == 0 {
 			continue
 		}
 
+		input := cleanInput(rawInput)
 		commandName := input[0]
 		args := input[1:]
 
 		cmd, exists := commands[commandName]
 		if exists {
 			err := cmd.callback(cfg, args...)
+			line.AppendHistory(rawInput)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -44,6 +57,20 @@ func startRepl(cfg *config) {
 			continue
 		}
 	}
+}
+
+func setupSignalHandler() {
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-sigs
+		fmt.Println("\nSignal received! Cleaning up...")
+		if line != nil {
+			line.Close() // Restore terminal state
+		}
+		os.Exit(0)
+	}()
 }
 
 func cleanInput(text string) []string {
