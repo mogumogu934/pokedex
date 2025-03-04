@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"time"
 
 	"github.com/mogumogu934/pokedex/internal/pokeapi"
 )
@@ -61,6 +62,14 @@ func commandCatch(cfg *config, args ...string) error {
 	}
 
 	// fmt.Printf("Catch rate: %d%%\n", catchRate)
+
+	time.Sleep(1250 * time.Millisecond)
+	fmt.Println("...")
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Println("...")
+	time.Sleep(2000 * time.Millisecond)
+	fmt.Println("...")
+	time.Sleep(2500 * time.Millisecond)
 
 	if caught := catchRate >= rand.Intn(100); caught {
 		fmt.Printf("%s was caught!\n", pokemonTarget)
