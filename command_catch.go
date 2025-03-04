@@ -108,7 +108,7 @@ func getBallRate(ball string) int {
 
 type PokedexData struct {
 	PokemonMap  map[string]pokeapi.PokemonInfo `json:"pokemon_map"`
-	PokemonList []string                       `json:"pokemonlist"`
+	PokemonList []string                       `json:"pokemon_list"`
 }
 
 func savePokedexData(data *PokedexData) error {
