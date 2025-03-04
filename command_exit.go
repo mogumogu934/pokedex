@@ -12,7 +12,7 @@ func commandExit(cfg *config, args ...string) error {
 		fmt.Println("Error saving Pokedex data:", err)
 	}
 	fmt.Println("Saving your Pokedex...")
-	time.Sleep(2 * time.Second)
+	time.Sleep(2500 * time.Millisecond)
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	line.Close()
 	os.Exit(0)

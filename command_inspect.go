@@ -7,7 +7,7 @@ import (
 
 func commandInspect(cfg *config, args ...string) error {
 	if len(args) == 0 {
-		return errors.New("you must provide the name of a valid pokemon")
+		return errors.New(usageError("inspect"))
 	}
 
 	pokemon := args[0]
@@ -17,25 +17,26 @@ func commandInspect(cfg *config, args ...string) error {
 		return err
 	}
 
-	if _, exists := pokedexData.PokemonMap[pokemon]; !exists {
+	pokemonInfo, exists := pokedexData.PokemonMap[pokemon]
+	if !exists {
 		return fmt.Errorf("you have yet to catch %s", pokemon)
 	}
 
-	height := float64(pokedexData.PokemonMap[pokemon].Height) / 10.0
-	weight := float64(pokedexData.PokemonMap[pokemon].Weight) / 10.0
+	height := float64(pokemonInfo.Height) / 10.0
+	weight := float64(pokemonInfo.Weight) / 10.0
 
-	fmt.Printf("Name: %s\n", pokedexData.PokemonMap[pokemon].Name)
-	fmt.Printf("Number: %d\n", pokedexData.PokemonMap[pokemon].ID)
+	fmt.Printf("Name: %s\n", pokemonInfo.Name)
+	fmt.Printf("Number: %d\n", pokemonInfo.ID)
 	fmt.Printf("Height: %v m\n", height)
 	fmt.Printf("Weight: %v kg\n", weight)
 	fmt.Printf("Stats:\n")
 
-	for _, stat := range pokedexData.PokemonMap[pokemon].Stats {
+	for _, stat := range pokemonInfo.Stats {
 		fmt.Printf("  - %s: %d\n", stat.Stat.Name, stat.BaseStat)
 	}
 
 	fmt.Printf("Types:\n")
-	for _, pType := range pokedexData.PokemonMap[pokemon].Types {
+	for _, pType := range pokemonInfo.Types {
 		fmt.Printf("  - %s\n", pType.Type.Name)
 	}
 

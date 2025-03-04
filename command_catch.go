@@ -27,7 +27,7 @@ func init() {
 
 func commandCatch(cfg *config, args ...string) error {
 	if len(args) == 0 {
-		return errors.New("you must provide the name of a valid pokemon")
+		return errors.New(usageError("catch"))
 	}
 
 	if len(pokemonInLocation) == 0 {
@@ -72,11 +72,11 @@ func commandCatch(cfg *config, args ...string) error {
 
 	// fmt.Printf("Catch rate: %d%%\n", catchRate)
 
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	fmt.Println("...")
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(1250 * time.Millisecond)
 	fmt.Println("...")
-	time.Sleep(2000 * time.Millisecond)
+	time.Sleep(1250 * time.Millisecond)
 	fmt.Println("...")
 	time.Sleep(2500 * time.Millisecond)
 
@@ -96,9 +96,9 @@ func getBallRate(ball string) int {
 	case "master-ball":
 		return 500
 	case "ultra-ball":
-		return 160
+		return 170
 	case "great-ball":
-		return 130
+		return 135
 	case "poke-ball":
 		return 100
 	default:

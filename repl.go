@@ -88,22 +88,22 @@ var commands map[string]cliCommand
 
 func init() {
 	commands = map[string]cliCommand{
-		"help": {
-			name:        "help",
-			description: "Displays list of commands",
-			callback:    commandHelp,
+		"catch": {
+			name:        "catch <pokemon name> <ball type>",
+			description: "Attempts to catch a Pokemon",
+			callback:    commandCatch,
 		},
 
-		"mapf": {
-			name:        "mapf",
-			description: "Displays the next page of locations",
-			callback:    commandMapf,
+		"cry": {
+			name:        "cry <pokemon name>",
+			description: "Plays a Pokemon's cry",
+			callback:    commandCry,
 		},
 
-		"mapb": {
-			name:        "mapb",
-			description: "Displays the previous page of locations",
-			callback:    commandMapb,
+		"exit": {
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
 		},
 
 		"explore": {
@@ -112,10 +112,10 @@ func init() {
 			callback:    commandExplore,
 		},
 
-		"catch": {
-			name:        "catch <pokemon name> <ball type>",
-			description: "Attempts to catch a Pokemon",
-			callback:    commandCatch,
+		"help": {
+			name:        "help",
+			description: "Displays list of commands",
+			callback:    commandHelp,
 		},
 
 		"inspect": {
@@ -124,16 +124,26 @@ func init() {
 			callback:    commandInspect,
 		},
 
+		"mapb": {
+			name:        "mapb",
+			description: "Displays the previous page of locations",
+			callback:    commandMapb,
+		},
+
+		"mapf": {
+			name:        "mapf",
+			description: "Displays the next page of locations",
+			callback:    commandMapf,
+		},
+
 		"pokedex": {
 			name:        "pokedex",
 			description: "Displays list of all Pokemon caught",
 			callback:    commandPokedex,
 		},
-
-		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
-			callback:    commandExit,
-		},
 	}
+}
+
+func usageError(cmd string) string {
+	return fmt.Sprintf("usage: %s", commands[cmd].name)
 }
