@@ -1,19 +1,28 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 
 	"github.com/mogumogu934/pokedex/internal/pokeapi"
 )
 
-var pokedex = make(map[string]pokeapi.PokemonInfo)
-var pokemonCaught []string
+var pokedexData = PokedexData{}
 
 func init() {
-	pokemonCaught = make([]string, 0)
+	loadedData, err := loadPokedexData()
+	if err != nil {
+		pokedexData = PokedexData{
+			PokemonMap:  make(map[string]pokeapi.PokemonInfo),
+			PokemonList: []string{},
+		}
+	} else {
+		pokedexData = *loadedData
+	}
 }
 
 func commandCatch(cfg *config, args ...string) error {
@@ -63,7 +72,7 @@ func commandCatch(cfg *config, args ...string) error {
 
 	// fmt.Printf("Catch rate: %d%%\n", catchRate)
 
-	time.Sleep(1250 * time.Millisecond)
+	time.Sleep(1500 * time.Millisecond)
 	fmt.Println("...")
 	time.Sleep(1500 * time.Millisecond)
 	fmt.Println("...")
@@ -73,8 +82,8 @@ func commandCatch(cfg *config, args ...string) error {
 
 	if caught := catchRate >= rand.Intn(100); caught {
 		fmt.Printf("%s was caught!\n", pokemonTarget)
-		pokedex[pokemonTarget] = pokemonInfo                 // For commandInspect
-		pokemonCaught = append(pokemonCaught, pokemonTarget) // To handle multiple of same Pokemon
+		pokedexData.PokemonMap[pokemonTarget] = pokemonInfo                      // For commandInspect
+		pokedexData.PokemonList = append(pokedexData.PokemonList, pokemonTarget) // To handle multiple of same Pokemon
 	} else {
 		fmt.Printf("%s escaped!\n", pokemonTarget)
 	}
@@ -95,4 +104,38 @@ func getBallRate(ball string) int {
 	default:
 		return 0
 	}
+}
+
+type PokedexData struct {
+	PokemonMap  map[string]pokeapi.PokemonInfo `json:"pokemon_map"`
+	PokemonList []string                       `json:"pokemonlist"`
+}
+
+func savePokedexData(data *PokedexData) error {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile("pokedex.json", jsonData, 0644)
+}
+
+func loadPokedexData() (*PokedexData, error) {
+	data, err := os.ReadFile("pokedex.json")
+	if err != nil {
+		if os.IsNotExist(err) {
+			return &PokedexData{
+				PokemonMap:  make(map[string]pokeapi.PokemonInfo),
+				PokemonList: []string{},
+			}, nil
+		}
+		return nil, err
+	}
+
+	var tempPokedexData PokedexData
+	err = json.Unmarshal(data, &tempPokedexData)
+	if err != nil {
+		return nil, err
+	}
+	return &tempPokedexData, nil
 }

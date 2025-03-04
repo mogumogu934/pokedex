@@ -6,12 +6,12 @@ import (
 )
 
 func commandPokedex(cfg *config, args ...string) error {
-	if len(pokemonCaught) == 0 {
+	if len(pokedexData.PokemonList) == 0 {
 		return errors.New("you have yet to catch any Pokemon")
 	}
 
 	fmt.Println("Your Pokedex:")
-	for _, pokemon := range pokemonCaught {
+	for _, pokemon := range pokedexData.PokemonList {
 		fmt.Printf("  - %s\n", pokemon)
 	}
 
