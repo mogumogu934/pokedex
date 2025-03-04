@@ -12,7 +12,6 @@ import (
 )
 
 type LocationAreaResp struct {
-	ID                int    `json:"id"`
 	Name              string `json:"name"`
 	PokemonEncounters []struct {
 		Pokemon struct {
