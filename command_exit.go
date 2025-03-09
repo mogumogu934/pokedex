@@ -9,8 +9,10 @@ import (
 func commandExit(cfg *config, args ...string) error {
 	err := savePokedexData(&pokedexData)
 	if err != nil {
-		fmt.Println("Error saving Pokedex data:", err)
+		fmt.Printf("error saving Pokedex: %v", err)
+		return nil
 	}
+
 	fmt.Println("Saving your Pokedex...")
 	time.Sleep(2500 * time.Millisecond)
 	fmt.Println("Closing the Pokedex... Goodbye!")
