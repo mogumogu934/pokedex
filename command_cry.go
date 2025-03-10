@@ -35,6 +35,9 @@ func commandCry(cfg *config, args ...string) error {
 	errc := make(chan error, 1)
 
 	go func() {
+		fmt.Printf("%s lets out a cry...", pokemon)
+		fmt.Println()
+
 		err := downloadAndPlayCry(cryURL)
 		if err != nil {
 			errc <- err
