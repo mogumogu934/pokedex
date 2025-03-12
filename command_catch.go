@@ -117,7 +117,12 @@ func savePokedexData(data *PokedexData) error {
 		return err
 	}
 
-	return os.WriteFile("pokedex.json", jsonData, 0644)
+	err = os.WriteFile("pokedex.json", jsonData, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func loadPokedexData() (*PokedexData, error) {
@@ -137,5 +142,6 @@ func loadPokedexData() (*PokedexData, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &tempPokedexData, nil
 }
